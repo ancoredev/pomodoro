@@ -1,0 +1,105 @@
+:root {
+    --main-color: rgb(45, 39, 220);
+    --main-hovered: rgb(80, 74, 255);
+}
+
+.pomodoro    {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.timer {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin-top: 200px;  
+}
+
+.timer-progress {
+    position: absolute;
+}
+
+.timer-count {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4.5rem;
+}
+
+.controls {
+    margin-top: 40px;
+    width: 200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+} 
+
+button {
+    outline: none;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all .15s ease-in;
+}
+
+.btn-circled {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    margin: 0;
+    padding: 12px;
+    background-color: #FDFCFE;
+    border-color: var(--main-color);
+    color: var(--main-color);
+}
+
+.btn-circled:hover {
+    background-color: #e0e9ff;
+}
+
+.btn-major {
+    width: 60px;
+    height: 60px;
+    padding: 19px;
+}
+
+.btn-disabled {
+    border-color: #c5c5c5;
+    color: #c5c5c5;
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 200px;
+}
+
+.settings h2 {
+    margin-bottom: 40px;
+}
+
+.parameter {
+    margin-bottom: 20px;
+}
+
+
+.slider {
+    width: 400px;
+}
+
+.settings button {
+    background-color: var(--main-color);
+    padding: 12px 35px;
+    border-color: var(--main-color);
+    color: #FDFCFE;
+    font-size: 1rem;
+    border-radius: 5px;
+}
+
+.settings button:hover {
+    background-color: var(--main-hovered);
+    border-color: var(--main-hovered);
+}
