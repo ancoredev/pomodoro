@@ -1,5 +1,8 @@
 import { Slider } from "@mui/material";
 
+import { useContext } from "react";
+import SettingsContext from "../SettingsContext";
+
 const marksWork = [
     {
         value: 5,
@@ -31,9 +34,9 @@ const marksBreak = [
 ];
 
 
-
 function Settings () {
-    
+    const settings = useContext(SettingsContext);
+
     return (
         <div className="settings">
           <h2>Settings</h2>
@@ -42,7 +45,8 @@ function Settings () {
             <div className="slider">
                 <Slider 
                     aria-label="Work duration"
-                    value={25}
+                    value={settings.workDuration}
+                    onChange={event => settings.setWorkDuration(event.target.value)}
                     step={1}
                     valueLabelDisplay="auto"
                     marks={marksWork}
@@ -56,7 +60,8 @@ function Settings () {
             <div className="slider">
                 <Slider 
                     aria-label="Work duration"
-                    value={5}
+                    value={settings.breakDuration}
+                    onChange={event => settings.setBreakDuration(event.target.value)}
                     step={1}
                     valueLabelDisplay="auto"
                     marks={marksBreak}
@@ -65,7 +70,7 @@ function Settings () {
                 />
             </div>
           </div>
-          <button>
+          <button onClick={() => settings.setSettingsOpen(false)}>
             Back
           </button>
         </div>
