@@ -3,6 +3,7 @@ import { CircularProgress } from "@mui/material";
 import { useState, useContext, useEffect, useRef } from 'react';
 
 import SettingsContext from "../SettingsContext";
+import { getFormatedTime } from '../utils';
 
 
 function Timer () {
@@ -58,9 +59,8 @@ function Timer () {
         settings.breakDuration*60;
     const percentage = Math.round((secondsLeft/totalSeconds) * 100);
 
-    const formatedMinutes = Math.floor(secondsLeft / 60);
-    const formatedSeconds = secondsLeft % 60 < 10 ? '0' + secondsLeft % 60 : secondsLeft % 60;
-    const formatedTime = [formatedMinutes, formatedSeconds].join(':');
+
+    const formatedTime = getFormatedTime(secondsLeft);
 
     return (
         <div className="pomodoro">
