@@ -1,65 +1,18 @@
 import { CircularProgress } from "@mui/material";
 
-import { useState, useContext, useEffect, useRef } from 'react';
+import { useContext } from 'react';
 
 import SettingsContext from "../SettingsContext";
 import { getFormatedTime } from '../utils';
+import useTimer from './../hooks/useTimer';
 
 
 function Timer () {
     const settings = useContext(SettingsContext);
 
-    const [ isPaused, setPaused ] = useState(true);
-    const [ mode, setMode ] = useState("work");
-    const [ secondsLeft, setSecondsLeft ] = useState(0);
-
-    const timerRef = useRef({
-        isPaused,
-        mode,
-        secondsLeft
-    });
-
-    const initTimer = () => {
-        setSecondsLeft(settings.workDuration * 60);
-    }
-
-    const switchMode = () => {
-        const nextMode = timerRef.current.mode === 'work' ? 'break' : 'work';
-        const nextSeconds = nextMode === 'work' ? settings.workDuration * 60 : settings.breakDuration * 60;
-
-        setMode(nextMode);
-        timerRef.current.mode = nextMode;
-
-        setSecondsLeft(nextSeconds);
-        timerRef.current.secondsLeft = nextSeconds;
-    }
-
-    function tick() {
-        timerRef.current.secondsLeft = timerRef.current.secondsLeft - 1;
-        setSecondsLeft(timerRef.current.secondsLeft);
-    }
-
-    useEffect(() => {
-        initTimer();
-        console.log(timerRef.current);
-        const interval = setInterval(() => {
-            if (timerRef.current.isPaused) {
-                return;
-            } 
-            if (timerRef.current.secondsLeft === 0) {
-                return switchMode();
-            }
-            tick();
-        }, 1000);
-        return () => clearInterval(interval);
-    }, [settings]);
-
-    const totalSeconds = mode === 'work' ? 
-        settings.workDuration*60 : 
-        settings.breakDuration*60;
-    const percentage = Math.round((secondsLeft/totalSeconds) * 100);
-
-
+    const { secondsLeft, totalSeconds, isPaused, togglePause } = useTimer(settings.workDuration, settings.breakDuration);
+    
+    const percentage = (secondsLeft/totalSeconds) * 100;
     const formatedTime = getFormatedTime(secondsLeft);
 
     return (
@@ -85,12 +38,12 @@ function Timer () {
         </button>
         {
             isPaused ?
-            <button className="btn-circled btn-major" onClick = {() => { setPaused(false); timerRef.current.isPaused = false; }}>
+            <button className="btn-circled btn-major" onClick = {() => togglePause()}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                     <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
                 </svg>
             </button> :
-            <button className="btn-circled btn-major" onClick = {() => { setPaused(true); timerRef.current.isPaused = true; }}>
+            <button className="btn-circled btn-major" onClick = {() => togglePause()}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                     <path fillRule="evenodd" d="M6.75 5.25a.75.75 0 01.75-.75H9a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H7.5a.75.75 0 01-.75-.75V5.25zm7.5 0A.75.75 0 0115 4.5h1.5a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75V5.25z" clipRule="evenodd" />
                 </svg>
