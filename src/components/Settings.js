@@ -59,7 +59,7 @@ function Settings () {
             <p>Break duration</p>
             <div className="slider">
                 <Slider 
-                    aria-label="Work duration"
+                    aria-label="Break duration"
                     value={settings.breakDuration}
                     onChange={event => settings.setBreakDuration(event.target.value)}
                     step={1}

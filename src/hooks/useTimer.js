@@ -1,62 +1,54 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import { getFormatedTime } from '../utils'
 
 
-function useTimer( workDuration, breakDuration) {
+function useTimer (workDuration, breakDuration) {
 
-    const [ isPaused, setPaused ] = useState(true);
-    const [ mode, setMode ] = useState("break");
-    const [ secondsLeft, setSecondsLeft ] = useState(0);
+    const [ seconds, setSeconds ] = useState(workDuration*60);
+    const [ isRunning, setRunning ] = useState(false);
+    const [ isBreak, setBreak ] = useState(false);
 
-    const timerRef = useRef({ isPaused, mode, secondsLeft });
-
-    const initTimer = () => {
-        setSecondsLeft(workDuration * 60);
+    const startTimer = () => setRunning(true);
+    const pauseTimer = () => setRunning(false);
+    const resetTimer = () => {
+        setRunning(false);
+        setBreak(false);
+        setSeconds(workDuration*60);
     }
 
-    const switchMode = () => {
-        const nextMode = timerRef.current.mode === 'work' ? 'break' : 'work';
-        const nextSeconds = nextMode === 'work' ? workDuration * 60 : breakDuration * 60;
-
-        setMode(nextMode);
-        timerRef.current.mode = nextMode;
-
-        setSecondsLeft(nextSeconds);
-        timerRef.current.secondsLeft = nextSeconds;
-    }
-
-    function tick() {
-        timerRef.current.secondsLeft = timerRef.current.secondsLeft - 1;
-        setSecondsLeft(timerRef.current.secondsLeft);
-    }
-
-    const togglePause = () => {
-        setPaused(!isPaused);
-        timerRef.current.isPaused = !timerRef.current.isPaused;
+    const switchMode = (isBreak) => {
+        setBreak(isBreak => !isBreak);
+        setRunning(false);
+        let nextRange = isBreak ? workDuration * 60 : breakDuration *60;
+        setSeconds(nextRange);
     }
 
     useEffect(() => {
-        initTimer();
-        const interval = setInterval(() => {
-            if (timerRef.current.isPaused) {
-                return;
-            } 
-            if (timerRef.current.secondsLeft === 0) {
-                return switchMode();
+        let interval = setInterval(() => {
+            clearInterval(interval)
+            if (isRunning) {
+                if (seconds === 0) {
+                    switchMode(isBreak);
+                } else {
+                    setSeconds(seconds => seconds - 1)
+                }
             }
-            tick();
+            
         }, 1000);
         return () => clearInterval(interval);
-    }, [breakDuration, workDuration]);
+      }, [seconds, isRunning])
 
-    const totalSeconds = mode === 'work' ? 
-        workDuration*60 : 
-        breakDuration*60;
+    const totalSeconds = isBreak ? breakDuration*60 : workDuration*60;
+    const currentTime = getFormatedTime(seconds);
+    const progressPercent = (seconds/totalSeconds) * 100;
 
     return {
-        secondsLeft,
-        totalSeconds,
-        isPaused,
-        togglePause
+        currentTime,
+        progressPercent,
+        isRunning,
+        startTimer,
+        pauseTimer,
+        resetTimer
     }
 }
 
