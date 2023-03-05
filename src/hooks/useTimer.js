@@ -25,12 +25,11 @@ function useTimer (workDuration, breakDuration) {
 
     useEffect(() => {
         let interval = setInterval(() => {
-            clearInterval(interval)
             if (isRunning) {
                 if (seconds === 0) {
                     switchMode(isBreak);
                 } else {
-                    setSeconds(seconds => seconds - 1)
+                    setSeconds(seconds => seconds - 1);
                 }
             }
             
@@ -38,14 +37,18 @@ function useTimer (workDuration, breakDuration) {
         return () => clearInterval(interval);
       }, [seconds, isRunning])
 
-    const totalSeconds = isBreak ? breakDuration*60 : workDuration*60;
-    const currentTime = getFormatedTime(seconds);
-    const progressPercent = (seconds/totalSeconds) * 100;
+    let totalSeconds = isBreak ? breakDuration*60 : workDuration*60;
+    let currentTime = getFormatedTime(seconds);
+    let progressPercent = (seconds/totalSeconds) * 100;
+    let displayMode = isBreak ? "Break" : "Work";
+    
+    document.title = isBreak ? "Break: " + currentTime : "Work: " + currentTime;
 
     return {
         currentTime,
         progressPercent,
         isRunning,
+        displayMode,
         startTimer,
         pauseTimer,
         resetTimer
